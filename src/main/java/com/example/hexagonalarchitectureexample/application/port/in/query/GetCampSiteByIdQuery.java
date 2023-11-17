@@ -7,16 +7,15 @@ import java.util.UUID;
 
 import static com.example.hexagonalarchitectureexample.common.validation.Validation.validate;
 
-public record GetRentCampSiteQuery(
-        @NotNull(message = "memberId is required")
-        UUID memberId
+public record GetCampSiteByIdQuery(
+        @NotNull(message = "campSiteId is required")
+        UUID campSiteId
 ) {
-
     @Builder
-    public GetRentCampSiteQuery(
-            UUID memberId
+    public GetCampSiteByIdQuery(
+            UUID campSiteId
     ) {
-        this.memberId = memberId;
+        this.campSiteId = campSiteId;
         validate(this);
     }
 }
