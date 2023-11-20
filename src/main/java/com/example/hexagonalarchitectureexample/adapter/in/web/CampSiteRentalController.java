@@ -1,10 +1,14 @@
 package com.example.hexagonalarchitectureexample.adapter.in.web;
 
+import com.example.hexagonalarchitectureexample.adapter.in.web.request.RentCampSiteRequest;
 import com.example.hexagonalarchitectureexample.adapter.in.web.response.CampSiteResponse;
 import com.example.hexagonalarchitectureexample.application.domain.model.CampSite;
 import com.example.hexagonalarchitectureexample.application.port.in.GetCampSiteUseCase;
 import com.example.hexagonalarchitectureexample.application.port.in.GetRentCampSiteUseCase;
 import com.example.hexagonalarchitectureexample.application.port.in.RentCampSiteUseCase;
+import com.example.hexagonalarchitectureexample.application.port.in.command.RentCampSiteCommand;
+import com.example.hexagonalarchitectureexample.application.port.in.query.GetCampSiteByIdQuery;
+import com.example.hexagonalarchitectureexample.application.port.in.query.GetRentCampSiteQuery;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +37,9 @@ public class CampSiteRentalController {
     @GetMapping("/{memberId}/rentals")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Set<CampSiteResponse>> getRentCampSites(@PathVariable("memberId") UUID memberId) {
-        GetRentCampSiteUseCase.GetRentCampSiteQuery query = new GetRentCampSiteUseCase.GetRentCampSiteQuery(memberId);
+        GetRentCampSiteQuery query = GetRentCampSiteQuery.builder()
+                .memberId(memberId)
+                .build();
         Set<CampSite> campSites = getRentCampSiteUseCase.getRentCampSitesByMemberId(query);
         return ResponseMapper.mapToCampSiteResponse(campSites, HttpStatus.OK);
     }
@@ -41,8 +47,24 @@ public class CampSiteRentalController {
     @GetMapping("/{campSiteId}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<CampSiteResponse> getCampSiteById(@PathVariable("campSiteId") UUID campSiteId) {
-        GetCampSiteUseCase.GetCampSiteByIdQuery query = new GetCampSiteUseCase.GetCampSiteByIdQuery(campSiteId);
+        GetCampSiteByIdQuery query = GetCampSiteByIdQuery
+                .builder()
+                .campSiteId(campSiteId)
+                .build();
         CampSite campSite = getCampSiteUseCase.getCampSiteById(query);
         return ResponseMapper.mapToCampSiteResponse(campSite, HttpStatus.OK);
+    }
+
+    @PostMapping("/{campSiteId}/{siteNumber}/rentals")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void rentCampSite(@PathVariable("campSiteId") UUID campSiteId,
+                             @PathVariable("siteNumber") int siteNumber,
+                             @RequestBody RentCampSiteRequest body) {
+        RentCampSiteCommand command = RentCampSiteCommand.builder()
+                .memberId(body.memberId())
+                .siteNumber(siteNumber)
+                .campSiteId(campSiteId)
+                .build();
+        rentCampSiteUseCase.rentCampSite(command);
     }
 }
