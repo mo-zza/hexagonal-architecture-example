@@ -2,9 +2,7 @@ package com.example.hexagonalarchitectureexample.application.domain.model;
 
 import com.example.hexagonalarchitectureexample.common.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
 @Entity
@@ -18,4 +16,13 @@ public class Rental extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "camp_site_id")
     private CampSite campSite;
+
+    @Builder
+    public Rental(
+            @NonNull Member member,
+            @NonNull CampSite campSite
+    ) {
+        this.member = member;
+        this.campSite = campSite;
+    }
 }
