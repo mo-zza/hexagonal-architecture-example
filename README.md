@@ -15,6 +15,8 @@ This is a simple example of Hexagonal Architecture with Spring boot.
 
 ## Structure
 
+### Flow
+
 ```mermaid
 graph LR
     cliet[Client] --> controller[Controller]
