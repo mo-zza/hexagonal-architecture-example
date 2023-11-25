@@ -26,13 +26,13 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'com.querydsl:querydsl-jpa'
+    implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'com.h2database:h2'
     annotationProcessor 'org.projectlombok:lombok'
-    annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
-    annotationProcessor 'jakarta.annotation:jakarta.annotation-api:2.1.1'
+    annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
+    annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
     annotationProcessor 'jakarta.persistence:jakarta.persistence-api:3.1.0'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
@@ -42,13 +42,12 @@ tasks.named('test') {
 }
 
 def querydslDir = "$buildDir/generated/querydsl"
-
 querydsl {
     jpa = true
     querydslSourcesDir = querydslDir
 }
 sourceSets {
-    main.java.srcDirs querydslDir
+    main.java.srcDir querydslDir
 }
 configurations {
     querydsl.extendsFrom compileClasspath
